@@ -1,12 +1,5 @@
 export bitonicsort
 
-"""
-$(SIGNATURES)
-- `cushared`: DynamicalMatrix
-
-Return [diamond norm](https://arxiv.org/pdf/1207.5726.pdf) of dynamical matrix `Φ`.
-"""
-
 # sort kernel
 bisort!(shared, j, k) = begin
   tid = UInt(((blockIdx().x - 1) * blockDim().x + threadIdx().x)-1)

@@ -1,3 +1,7 @@
+name = "SpinGlassExhaustive"
+authors = ["Dariusz Kurzyk <dkurzyk@iitis.pl>"]
+version = "0.0.1"
+
 [deps]
 AbstractPlotting = "537997a7-5e4e-5d89-9595-2241ea00577e"
 Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
