@@ -1,7 +1,4 @@
-
-using SpinGlassNetworks, LightGraphs
-using CUDA, LinearAlgebra
-using Bits
+export brute_force_gpu
 
 function kernel(J, energies, σ)
     idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
@@ -16,7 +13,7 @@ function kernel(J, energies, σ)
     return
 end
 
-function bench_gpu(ig::IsingGraph, max_states::Int=100)
+function brute_force_gpu(ig::IsingGraph, max_states::Int=100)
     L = nv(ig)
     N = 2^L
 
