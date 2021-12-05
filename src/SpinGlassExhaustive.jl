@@ -8,6 +8,7 @@ using BenchmarkTools
 using StaticArrays
 using Setfield
 using DocStringExtensions
+using SpinGlassExhaustive
 eval(Expr(:export, names(SpinGlassExhaustive)...))
 
 include("bitonicsort.jl")
