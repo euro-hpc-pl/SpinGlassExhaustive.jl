@@ -1,4 +1,5 @@
 using SpinGlassNetworks
+using SpinGlassExhaustive
 
 function bench_cpu(instance::String, max_states::Int=100)
     m = 2
