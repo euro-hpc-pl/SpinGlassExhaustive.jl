@@ -8,7 +8,7 @@ function kernel(J, energies, σ)
 
     for k=1:L
         @inbounds energies[idx] += J[k, k] * σ[k, idx]
-        for l=1:L @inbounds energies[idx] += σ[k, idx] * J[k, l] * σ[l, idx] end # 1 -> (k+1)
+        for l=(k+1):L @inbounds energies[idx] += σ[k, idx] * J[k, l] * σ[l, idx] end
     end
     return
 end
