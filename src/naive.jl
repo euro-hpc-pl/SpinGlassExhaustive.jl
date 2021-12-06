@@ -6,10 +6,12 @@ function naive_energy_kernel(J, energies, σ)
 
     for i=1:L if tstbit(idx, i) @inbounds σ[i, idx] = 1 end end
 
+    en = 0.0
     for k=1:L
-        @inbounds energies[idx] += J[k, k] * σ[k, idx]
-        for l=k+1:L @inbounds energies[idx] += σ[k, idx] * J[k, l] * σ[l, idx] end
+        en += J[k, k] * σ[k, idx]
+        for l=k+1:L en += σ[k, idx] * J[k, l] * σ[l, idx] end
     end
+    energies[idx] = en
     return
 end
 
