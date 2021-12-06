@@ -1,17 +1,9 @@
-"""
-Main module for `SpinGlassExhaustive.jl` -- a Julia package for brute-force spin-glass problems with CUDA.
-"""
-
 module SpinGlassExhaustive
-using CUDA
-using BenchmarkTools
-using StaticArrays
-using Setfield
-using DocStringExtensions
-eval(Expr(:export, names(SpinGlassExhaustive)...))
+    using CUDA
+    using SpinGlassNetworks
+    using Bits
+    using LightGraphs
+    using LinearAlgebra
 
-include("bitonicsort.jl")
-include("ising.jl")
-include("utils.jl")
-
+    include("naive.jl")
 end
