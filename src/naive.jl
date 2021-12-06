@@ -8,8 +8,8 @@ function naive_energy_kernel(J, energies, σ)
 
     en = 0.0
     for k=1:L
-        en += J[k, k] * σ[k, idx]
-        for l=k+1:L en += σ[k, idx] * J[k, l] * σ[l, idx] end
+        @inbounds en += J[k, k] * σ[k, idx]
+        for l=k+1:L @inbounds en += σ[k, idx] * J[k, l] * σ[l, idx] end
     end
     energies[idx] = en
     return
