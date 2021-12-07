@@ -15,15 +15,19 @@ function naive_energy_kernel(J, energies, σ)
     return
 end
 
-function SpinGlassNetworks.brute_force(ig::IsingGraph, ::Val{:GPU}; num_states::Int=1)
+function SpinGlassNetworks.brute_force(
+    ig::IsingGraph,
+    ::Val{:GPU};
+    chunk::Int=10,
+    num_states::Int=1
+)
     L = nv(ig)
     N = 2^L
-    k = 10 #UGLY HACK!
     energies = CUDA.zeros(N)
     σ = CUDA.fill(Int32(-1), L, N)
-    J = couplings(ig) + Diagonal(biases(ig))
-    J_dev = CUDA.CuArray(J)
-    @cuda threads=2^k blocks=(2^(L-k)) naive_energy_kernel(J_dev, energies, σ)
+    J = CUDA.CuArray(couplings(ig) + Diagonal(biases(ig)))
+    th, bl = 2^chunk, 2^(L-chunk)
+    @cuda threads=th blocks=bl naive_energy_kernel(J, energies, σ)
     perm = sortperm(energies)[1:num_states]
     energies_cpu = Array(view(energies, perm))
     σ_cpu = Array(view(σ, :, perm))
