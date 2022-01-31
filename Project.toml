@@ -7,7 +7,6 @@ version = "0.1.0"
 [deps]
 Bits = "1654ce90-6ed3-553a-957f-9452c3a40996"
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
-CuQuantumInformation = "f0e14ebc-ef0b-4607-b2f3-a3ef940ee5aa"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
