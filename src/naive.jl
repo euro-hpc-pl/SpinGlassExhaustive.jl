@@ -2,23 +2,24 @@ export brute_force
 
 function naive_energy_kernel(J, energies, σ)
     idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+    stride = gridDim().x * blockDim().x
+
     L = size(σ, 1)
-
-    for i=1:L if tstbit(idx, i) @inbounds σ[i, idx] = 1 end end
-
-    en = 0.0
-    for k=1:L
-        @inbounds en += J[k, k] * σ[k, idx]
-        for l=k+1:L @inbounds en += σ[k, idx] * J[k, l] * σ[l, idx] end
+    for j ∈ idx:stride:length(energies)
+        for i=1:L if tstbit(j, i) @inbounds σ[i, j] = 1 end end
+        en = 0.0
+        for k=1:L
+            @inbounds en += J[k, k] * σ[k, j]
+            for l=k+1:L @inbounds en += σ[k, j] * J[k, l] * σ[l, j] end
+        end
+        energies[j] = en
     end
-    energies[idx] = en
     return
 end
 
 function SpinGlassNetworks.brute_force(
     ig::IsingGraph,
     ::Val{:GPU};
-    chunk::Int=10,
     num_states::Int=1
 )
     L = nv(ig)
@@ -26,7 +27,8 @@ function SpinGlassNetworks.brute_force(
     energies = CUDA.zeros(N)
     σ = CUDA.fill(Int32(-1), L, N)
     J = CUDA.CuArray(couplings(ig) + Diagonal(biases(ig)))
-    th, bl = 2^chunk, 2^(L-chunk)
+    th = 2 ^ 10 
+    bl = ceil(Int, N / th)
     @cuda threads=th blocks=bl naive_energy_kernel(J, energies, σ)
     perm = sortperm(energies)[1:num_states]
     energies_cpu = Array(view(energies, perm))

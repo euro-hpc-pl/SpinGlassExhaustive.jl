@@ -1,5 +1,8 @@
-using SpinGlassNetworks, LightGraphs, SpinGlassExhaustive
-using CUDA, LinearAlgebra
+using SpinGlassNetworks
+using LightGraphs
+using SpinGlassExhaustive
+using LinearAlgebra
+using CUDA
 using Bits
 
 function bench_cpu(instance::String, max_states::Int=100)
@@ -12,8 +15,6 @@ function bench_cpu(instance::String, max_states::Int=100)
     @time sp = brute_force(cl[1, 1], num_states=max_states)
     sp
 end
-
-
 
 function bench_gpu(instance::String, max_states::Int=100)
     m = 2
@@ -29,6 +30,7 @@ end
 println("*** CPU ***")
 sp_cpu = bench_cpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
 sp_cpu = bench_cpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
+
 println("*** GPU ***")
 sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
 sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
