@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/iitis/SpinGlassExhaustive.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/SpinGlassExhaustive.jl?branch=master)
+
 # IsingCuda.jl
 
 ### References

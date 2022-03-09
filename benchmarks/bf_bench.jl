@@ -37,3 +37,4 @@ sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
 
 @assert sp_gpu.energies ≈ sp_cpu.energies
 @assert sp_gpu.states == sp_cpu.states
+
