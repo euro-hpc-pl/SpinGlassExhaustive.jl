@@ -1,3 +1,8 @@
+struct Spectrum
+    energies::Vector{Float64}
+    states::Vector{Vector{Int}}
+end
+
 function energy_qubo(state_code, graph)
     F = 0
     N = size(graph,1)
@@ -97,4 +102,56 @@ function kernel_part(graph, energies, part_lst, part_st)
     end
     
     return
+end
+
+function exhaustive_search(ig::IsingGraph)
+    L = SpinGlassNetworks.nv(ig)
+    N = 2^L
+    
+   
+    σ = CUDA.fill(Int32(-1), L, N)
+    J = couplings(ig) + SpinGlassNetworks.Diagonal(biases(ig))
+    J_dev = CUDA.CuArray(J)
+    
+    energies = CUDA.zeros(L)
+    
+    k = 2
+    
+    threadsPerBlock::Int64 = 2^k
+    blocksPerGrid::Int64 = 2^(L-k)
+    
+    @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel(J_dev, energies)
+   
+    
+    states = sortperm(energies)
+       
+    Spectrum(energies[states], states)
+end
+
+function partial_exhaustive_search(ig::IsingGraph)
+    L = SpinGlassNetworks.nv(ig)
+    N = 2^L
+    
+   
+    σ = CUDA.fill(Int32(-1), L, N)
+    J = couplings(ig) + SpinGlassNetworks.Diagonal(biases(ig))
+    J_dev = CUDA.CuArray(J)
+    
+    energies = CUDA.zeros(N)
+    part_st = CUDA.zeros(2^(L-k))
+    part_lst = CUDA.zeros(2^(L-k))
+
+    k = 2
+    
+    threadsPerBlock::Int64 = 2^k
+    blocksPerGrid::Int64 = 2^(L-k)
+    
+    @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_part(J_dev, energies, part_lst, part_st)
+   
+    
+    idx = sortperm(part_lst)
+    part_st[idx]
+    part_lst[idx]
+       
+    Spectrum(part_lst[idx], part_st[idx])
 end

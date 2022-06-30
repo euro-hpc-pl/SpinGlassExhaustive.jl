@@ -17,7 +17,7 @@
     ig = SpinGlassEngine.ising_graph(graph_to_dict(graph))
     naive_res = SpinGlassNetworks.brute_force(ig)
     
-    @test resnaive_res.energies[1] ≈ cuda_min_energy
+    @test naive_res.energies[1] ≈ cuda_min_energy
 
 end 
 
