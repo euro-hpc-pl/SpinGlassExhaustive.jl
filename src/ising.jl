@@ -1,3 +1,10 @@
+using LabelledGraphs
+using SpinGlassNetworks
+
+export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search, partial_exhaustive_search
+
+const IsingGraph = LabelledGraph{MetaGraph{Int64, Float64}, Int64}
+
 struct Spectrum
     energies::Vector{Float64}
     states::Vector{Vector{Int}}
@@ -54,7 +61,6 @@ function kernel(graph, energies)
           
     return
 end
-
 
 function kernel_qubo(graph, energies)
     N = size(graph,1)
