@@ -1,5 +1,6 @@
 using LabelledGraphs
 using SpinGlassNetworks
+using Bits
 
 export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search, partial_exhaustive_search
 
