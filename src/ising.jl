@@ -8,7 +8,7 @@ const IsingGraph = LabelledGraph{MetaGraph{Int64, Float64}, Int64}
 
 struct Spectrum
     energies::Vector{Float64}
-    states::Vector{Vector{Int}}
+    states::Vector{Int}
 end
 
 function energy_qubo(state_code, graph)
