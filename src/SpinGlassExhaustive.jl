@@ -8,8 +8,6 @@ module SpinGlassExhaustive
     using MetaGraphs
     using CUDA
     using BenchmarkTools
-    using StaticArrays
-    using Setfield
     using DocStringExtensions
 
 
