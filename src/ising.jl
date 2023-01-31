@@ -140,12 +140,12 @@ function partial_exhaustive_search(ig::IsingGraph)
     σ = CUDA.fill(Int32(-1), L, N)
     J = couplings(ig) + SpinGlassNetworks.Diagonal(biases(ig))
     J_dev = CUDA.CuArray(J)
-    
+  
+    k = 2
+
     energies = CUDA.zeros(N)
     part_st = CUDA.zeros(2^(L-k))
     part_lst = CUDA.zeros(2^(L-k))
-
-    k = 2
     
     threadsPerBlock::Int64 = 2^k
     blocksPerGrid::Int64 = 2^(L-k)
@@ -192,7 +192,7 @@ function kernel_bucket(graph, energies, idx)
     return
 end
 
-function exhaustive_search_bucket(cu_graph, how_many = 8)
+function exhaustive_search_bucket(ig::IsingGraph, how_many = 8)
     L = SpinGlassNetworks.nv(ig)
 
     σ = CUDA.fill(Int32(-1), L, 2^L)
@@ -225,8 +225,6 @@ function exhaustive_search_bucket(cu_graph, how_many = 8)
         @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_bucket(J_dev, energies_d, idx)
 
         states_d = sortperm(energies_d)[1:how_many]
-
-        idx2 = (i-1)*how_many
 
         if i == 1
             lowest_d[1:how_many] = energies_d[states_d]
