@@ -12,7 +12,7 @@
 
 end 
 
-@testset "Compare partial ising kernel returning result with naive approach" begin
+@testset "Compare ising kernel returning partial result with naive approach" begin
     N = 8
     graph = generate_random_graph(N)
     cu_graph = graph |> cu 
