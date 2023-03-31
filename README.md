@@ -1,6 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/iitis/SpinGlassExhaustive.jl/badge.svg?branch=master)](https://coveralls.io/github/iitis/SpinGlassExhaustive.jl?branch=master)
 
-# IsingCuda.jl
+# SpinGlassExhaustive.jl
 
 ### References
 [Jałowiecki, K., Rams, M. M., & Gardas, B. (2021). Brute-forcing spin-glass problems with CUDA. Computer Physics Communications, 260, 107728.](https://arxiv.org/pdf/1904.03621.pdf)

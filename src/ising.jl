@@ -1,6 +1,7 @@
 using LabelledGraphs
 using SpinGlassNetworks
 using Bits
+using DocStringExtensions
 
 export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search, partial_exhaustive_search
 
@@ -11,6 +12,12 @@ struct Spectrum
     states::Vector{Int}
 end
 
+"""
+$(SIGNATURES)
+- `state_code`: state code for which the energy expressed in qubo is to be calculated.
+- `graph`: graph of the ising model.
+Returns the state energy expressed as QUBO.
+"""
 function energy_qubo(state_code, graph)
     F = 0
     N = size(graph,1)
@@ -31,6 +38,12 @@ function energy_qubo(state_code, graph)
     return F
 end
 
+"""
+$(SIGNATURES)
+- `state_code`: state code for which the energy.
+- `graph`: graph of the ising model.
+Returns the state energy.
+"""
 function energy(state_code, graph)
     F = 0
     N = size(graph,1)
@@ -51,6 +64,12 @@ function energy(state_code, graph)
     return F
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+- `energies`: array filled with zeros. Each array index represents the state of the system.
+Returns energies for every state.
+"""
 function kernel(graph, energies)
     state_code = (blockIdx().x - 1) * blockDim().x + threadIdx().x 
 
@@ -61,6 +80,12 @@ function kernel(graph, energies)
     return
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+- `energies`: array filled with zeros. Each array index represents the state of the system.
+Returns energies energy expressed as QUBO for every state.
+"""
 function kernel_qubo(graph, energies)
     N = size(graph,1)
 
@@ -73,6 +98,14 @@ function kernel_qubo(graph, energies)
     return
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+- `energies`: array filled with zeros. Each array index represents the state of the system.
+- `part_lst`: list for collecting partial energy results.
+- `part_st`: list for collecting partial state results.
+Returns energies for every state.
+"""
 function kernel_part(graph, energies, part_lst, part_st)
     i = blockIdx().x
     j = threadIdx().x
@@ -107,6 +140,11 @@ function kernel_part(graph, energies, part_lst, part_st)
     return
 end
 
+"""
+$(SIGNATURES)
+- `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
+Returns energies and states for provided model by brute-forece alorithm based on GPU.
+"""
 function exhaustive_search(ig::IsingGraph)
     L = SpinGlassNetworks.nv(ig)
 
@@ -132,6 +170,11 @@ function exhaustive_search(ig::IsingGraph)
     Spectrum(energies[states], states)
 end
 
+"""
+$(SIGNATURES)
+- `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
+Returns energies and states for provided model by brute-forece alorithm supported by partial selection based on GPU.
+"""
 function partial_exhaustive_search(ig::IsingGraph)
     L = SpinGlassNetworks.nv(ig)
     N = 2^L
@@ -160,6 +203,10 @@ function partial_exhaustive_search(ig::IsingGraph)
     Spectrum(part_lst[idx], part_st[idx])
 end
 
+"""
+$(SIGNATURES)
+Returns the maximum chunk size for the algorithm supported by bucket selection.
+"""
 function max_chunk_size()
     mem_bytes = CUDA.available_memory()
     elements_max = mem_bytes ÷ 16 ÷ 2
@@ -178,6 +225,13 @@ function max_chunk_size()
     chunk_size
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+- `energies`: array filled with zeros. Each array index represents the state of the system.
+- `idx`: list for collecting partial energy results.
+Returns energies for given indexes.
+"""
 function kernel_bucket(graph, energies, idx)
 
     i = (blockIdx().x - 1) * blockDim().x + threadIdx().x 
@@ -192,6 +246,11 @@ function kernel_bucket(graph, energies, idx)
     return
 end
 
+"""
+$(SIGNATURES)
+- `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
+Returns energies and states for provided model by brute-forece alorithm supported by bucket selection based on GPU.
+"""
 function exhaustive_search_bucket(ig::IsingGraph, how_many = 8)
     L = SpinGlassNetworks.nv(ig)
 

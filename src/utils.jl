@@ -1,5 +1,10 @@
 using Distributions
 
+"""
+$(SIGNATURES)
+- `d::Int`: size of random graph.
+Returns random array of size d.
+"""
 function generate_random_graph(d::Int)
     graph = rand(Uniform(-5,5),d, d)
     graph = graph * graph'
@@ -7,6 +12,11 @@ function generate_random_graph(d::Int)
     graph
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+Converts Ising model graph to QUBO representation.
+"""
 function graph_to_qubo(graph)
     N = size(graph,1)
     
@@ -25,6 +35,11 @@ function graph_to_qubo(graph)
     qubo
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+Converts Ising model graph to Dict.
+"""
 function graph_to_dict(graph)
     N = size(graph,1)
     graph_dict = Dict()
@@ -37,6 +52,11 @@ function graph_to_dict(graph)
     graph_dict
 end
 
+"""
+$(SIGNATURES)
+- `graph`: graph of the ising model.
+Returns offest between Ising model graph and its QUBO representation.
+"""
 function get_energy_offset(graph)
     N = size(graph,1)
     offset = 0
