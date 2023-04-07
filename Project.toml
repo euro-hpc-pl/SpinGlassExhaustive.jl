@@ -1,6 +1,6 @@
 name = "SpinGlassExhaustive"
 uuid = "40b79dc1-e706-48b7-a5ed-397fb6101cb7"
-authors = ["Dariusz Kurzyk <dkurzyk@iitis.pl>", "Łukasz Pawela <lukasz.pawela@gmail.com>"]
+authors = ["Bartłomiej Gardas <bartek.gardas@gmail.com>", "Dariusz Kurzyk <dkurzyk@iitis.pl>", "Łukasz Pawela <lukasz.pawela@gmail.com>"]
 version = "0.0.1"
 
 [deps]
