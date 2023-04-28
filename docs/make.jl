@@ -25,48 +25,8 @@ makedocs(
     expandfirst = []
     )
 
-#####
-# using Documenter, Example
-
-# makedocs(sitename="My Documentation")
-
-#####
-
-
-# using Documenter, SpinGlassExhaustive
-
-# format = Documenter.HTML(edit_link = "master",
-#                          prettyurls = get(ENV, "CI", nothing) == "true",
-# )
-
-# makedocs(
-#     clean = true,
-#     format = format,
-#     sitename = "SpinGlassExhaustive.jl",
-#     authors = "Dariusz Kurzyk, Łukasz Pawela",
-#     # assets = ["assets/favicon.ico"],
-#     pages = [
-#         "Home" => "index.md",
-#         # "Index" => [
-#         #     "lib/content/ising.md"
-#         # ]
-#         # "Manual" => Any[
-#         #     "man/quickstart.md",
-#         #     "man/vectors.md",
-#         #     "man/states.md",
-#         #     "man/functionals.md",
-#         #     "man/measurement.md",
-#         #     "man/random.md"
-#         # ],
-#         # "Library" => "lib/SpinGlassExhaustive.md",
-#         # Any[
-#         #     "lib/content/ising.md"
-#         # ]
-#     ]
-# )
-
-# deploydocs(
-#     deps = Deps.pip("pygments", "mkdocs", "python-markdown-math"),
-#     target = "build",
-#     repo = "github.com/euro-hpc-pl/SpinGlassExhaustive.jl.git"
-# )
+deploydocs(
+    deps = Deps.pip("pygments", "mkdocs", "python-markdown-math"),
+    target = "build",
+    repo = "github.com/euro-hpc-pl/SpinGlassExhaustive.jl.git"
+)
