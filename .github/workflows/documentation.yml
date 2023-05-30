@@ -18,8 +18,8 @@ jobs:
         with:
           version: '1.6'
       - name: Install dependencies
-        run: julia -e 'using Pkg; Pkg.add("Documenter"); Pkg.add("DocumenterCitations"); Pkg.add(PackageSpec(path=pwd())); Pkg.instantiate();'
+        run: julia --project=docs/ -e 'using Pkg; Pkg.add("Documenter"); Pkg.add("DocumenterCitations"); Pkg.add(PackageSpec(path=pwd())); Pkg.instantiate();'
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # If authenticating with GitHub Actions token
-        run: julia --project=@. docs/make.jl
+        run: julia --project=docs/ --project=@. docs/make.jl
