@@ -9,6 +9,9 @@ push!(LOAD_PATH,"../src/")
 _pages = [
     "Introduction" => "index.md",
     # "User Guide" => "guide.md",   
+    "Manual" => Any[
+        "man/quickstart.md"
+    ],
     "API Reference" => "api.md",
     # "Library" => "lib/SpinGlassExhaustive.md"
 ]
