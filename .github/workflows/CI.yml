@@ -5,5 +5,5 @@ jobs:
       os: linux
       script:
         - julia -e 'using Pkg; Pkg.add("Documenter"); Pkg.add("DocumenterCitations"); Pkg.add(PackageSpec(path=pwd())); Pkg.instantiate();'
-        - julia julia --project=@. docs/make.jl
+        - julia --project=@. docs/make.jl
       after_success: skip
