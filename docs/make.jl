@@ -10,7 +10,9 @@ _pages = [
     "Introduction" => "index.md",
     # "User Guide" => "guide.md",   
     "Manual" => Any[
-        "man/quickstart.md"
+        "man/quickstart.md",
+        "man/how_use.md",
+        "man/details.md"
     ],
     "API Reference" => "api.md",
     # "Library" => "lib/SpinGlassExhaustive.md"

@@ -143,7 +143,7 @@ end
 """
 $(SIGNATURES)
 - `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
-Returns energies and states for provided model by brute-forece alorithm based on GPU.
+Returns energies and states for provided graph by brute-forece alorithm based on GPU.
 """
 function exhaustive_search(ig::IsingGraph)
     L = SpinGlassNetworks.nv(ig)
@@ -173,7 +173,7 @@ end
 """
 $(SIGNATURES)
 - `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
-Returns energies and states for provided model by brute-forece alorithm supported by partial selection based on GPU.
+Returns energies and states for provided graph by brute-forece alorithm supported by partial selection based on GPU.
 """
 function partial_exhaustive_search(ig::IsingGraph)
     L = SpinGlassNetworks.nv(ig)
@@ -249,7 +249,7 @@ end
 """
 $(SIGNATURES)
 - `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
-Returns energies and states for provided model by brute-forece alorithm supported by bucket selection based on GPU.
+Returns energies and states for provided graph by brute-forece alorithm supported by bucket selection based on GPU.
 """
 function exhaustive_search_bucket(ig::IsingGraph, how_many = 8)
     L = SpinGlassNetworks.nv(ig)

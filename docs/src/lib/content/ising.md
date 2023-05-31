@@ -23,7 +23,7 @@
 
     - graph: graph of the ising model.
     - energies: array filled with zeros. Each array index represents the state of the system.
-    Returns energies energy expressed as QUBO for every state.
+    Returns energies expressed as QUBO for every state.
 
 **function kernel_part(graph, energies, part_lst, part_st)**
     
