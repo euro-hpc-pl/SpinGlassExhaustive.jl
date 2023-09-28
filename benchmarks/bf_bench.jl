@@ -38,7 +38,11 @@ sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
 @assert sp_gpu.energies ≈ sp_cpu.energies
 @assert sp_gpu.states == sp_cpu.states
 
-
+"""
+$(SIGNATURES)
+- `instance::String`: path to instance of Ising model.
+It generates the running time of algorithms that search the solution space of the Ising model.
+"""
 function bench(instance::String)
     ig = SpinGlassEngine.ising_graph(instance)
     graph = couplings(ig) + SpinGlassEngine.Diagonal(biases(ig))

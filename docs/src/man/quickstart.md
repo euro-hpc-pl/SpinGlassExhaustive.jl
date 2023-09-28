@@ -10,5 +10,6 @@ Package **SpinGlassExhaustive.jl** can be loaded via
 ```julia
 julia> using SpinGlassExhaustive.jl
 ```
-This manual provides a introduction explaining how use this package for
-numerical computations in quantum information theory.
+
+# How integrate SpinGlassExhaustive with other Euro-HPC packages
+As part of the Euro-HPC project, a number of tools were developed to solve the Ising problem. In this section, we will present how to benchmark algorithms from SpinGlassExhaustive, SpinGlassEngine.jl and SpinGlassNetworks.jl.

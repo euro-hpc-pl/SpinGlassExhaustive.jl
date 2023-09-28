@@ -12,7 +12,8 @@ _pages = [
     "Manual" => Any[
         "man/quickstart.md",
         "man/how_use.md",
-        "man/details.md"
+        "man/details.md",
+        "man/integration.md"
     ],
     "API Reference" => "api.md",
     # "Library" => "lib/SpinGlassExhaustive.md"
