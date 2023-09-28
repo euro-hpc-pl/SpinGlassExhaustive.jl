@@ -19,7 +19,7 @@ As part of the Euro-HPC project, a number of tools were developed to solve the I
 
 
 ```@repl SpinGlassExhaustive
-instance = "benchmarks/pathological/test_3_4_3.txt";
+instance = "../benchmarks/pathological/test_3_4_3.txt";
 
 function bench(instance::String)
     ig = SpinGlassEngine.ising_graph(instance)
