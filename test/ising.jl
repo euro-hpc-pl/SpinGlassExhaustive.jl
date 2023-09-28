@@ -68,3 +68,51 @@ end
     @test res_ising_bucket.energies[1] ≈ res_ising_bucket.energies[1]
 
 end 
+
+function bench_gpu(instance::String)
+    ig = SpinGlassEngine.ising_graph(instance)
+    graph = couplings(ig) + SpinGlassEngine.Diagonal(biases(ig))
+    cu_graph = graph |> cu 
+    qubo = graph_to_qubo(graph)
+    cu_qubo = qubo |> cu 
+
+    println("Graph size ", size(cu_graph,1))
+
+    # Setting SpinGlassNetworks - brute force
+    @btime begin
+        res_naive = SpinGlassNetworks.brute_force(ig)
+    end
+    
+    # Setting SpinGlassEnginge
+    nrows = 4
+    ncols = 4
+
+    fg = factor_graph(
+            ig, cluster_assignment_rule=super_square_lattice((nrows, ncols, 14))
+        )
+    
+    β = 1
+
+    network = SpinGlassEngine.PEPSNetwork{true}(
+        nrows,
+        ncols,
+        fg,
+        rotation(180),
+        β=β,
+        bond_dim=24
+    )
+
+    println("Result for SpinGlassEngine (low_energy_spectrum)")
+    @btime begin 
+        res_spe = SpinGlassEngine.low_energy_spectrum(network, 24)
+    end
+    
+    # SpinGlassExhaustive
+    @btime begin 
+        res_ising_bucket = SpinGlassExhaustive.exhaustive_search_bucket(ig)
+    end
+    
+    @test res_ising_bucket.energies[1] ≈ res_naive.energies[1]
+    @test res_ising_bucket.energies[1] ≈ res_spe.energies[1]
+    
+end 

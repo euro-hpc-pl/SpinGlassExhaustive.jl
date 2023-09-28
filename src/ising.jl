@@ -251,7 +251,7 @@ $(SIGNATURES)
 - `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
 Returns energies and states for provided graph by brute-forece alorithm supported by bucket selection based on GPU.
 """
-function exhaustive_search_bucket(ig::IsingGraph, how_many = 8)
+function exhaustive_search_bucket(ig::IsingGraph, how_many::Int = 8)
     L = SpinGlassNetworks.nv(ig)
 
     σ = CUDA.fill(Int32(-1), L, 2^L)
