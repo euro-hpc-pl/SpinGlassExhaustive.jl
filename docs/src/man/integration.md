@@ -128,5 +128,4 @@ function bench(instance::String)
     end
 end
 
-bench(instance)
 ```
