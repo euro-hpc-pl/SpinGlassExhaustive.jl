@@ -1,5 +1,5 @@
 using Distributions
-
+export generate_random_graph
 """
 $(SIGNATURES)
 - `d::Int`: size of random graph.

@@ -31,4 +31,13 @@ LinearMaps = "3.8"
 MetaGraphs = "0.6, 0.7"
 SortingAlgorithms = "1.0"
 SpinGlassNetworks = "0.2.3"
-julia = "1.5, 1.6"
+julia = "1.8, 1.9"
+
+[extras]
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+SpinGlassEngine = "0563570f-ea1b-4080-8a64-041ac6565a4e"
+
+[targets]
+test = ["Logging", "Test", "Random", "SpinGlassEngine"]
