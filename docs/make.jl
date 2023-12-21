@@ -26,7 +26,8 @@ makedocs(
     sitename="SpinGlassExhaustive.jl",
     authors = "Dariusz Kurzyk, Łukasz Pawela",
     pages = _pages,
-    format = Documenter.HTML(prettyurls = false),
+#    format = Documenter.HTML(prettyurls = false),
+    format = Documenter.LaTeX(platform="none"),
     expandfirst = []
     )
 
