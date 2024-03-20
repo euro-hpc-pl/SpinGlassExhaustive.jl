@@ -29,7 +29,7 @@ function SpinGlassNetworks.brute_force(
     J = CUDA.CuArray(JJ + Diagonal(biases(ig)))
     energies = CUDA.zeros(eltype(JJ), N)
 
-    th = 2 ^ 10 # this should eventually vary
+    th = 2 ^ 9 # this should eventually vary
     bl = cld(N, th)
 
     @cuda threads=th blocks=bl naive_energy_kernel(J, energies, σ)
