@@ -27,10 +27,10 @@ k = 2
 
 energies = CUDA.zeros(2^N);
 
-threadsPerBlock = 2^k
-blocksPerGrid = 2^(N-k)
+threads = 512
+blocks = cld(N, threads)
 
-@cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) SpinGlassExhaustive.kernel_qubo(cu_qubo, energies);
+@cuda blocks=blocks threads=threads SpinGlassExhaustive.kernel_qubo(cu_qubo, energies);
 
 states = sortperm(energies);
 energies[states];
@@ -49,10 +49,10 @@ k = 2
 
 energies = CUDA.zeros(2^N);
 
-threadsPerBlock = 2^k
-blocksPerGrid = 2^(N-k)
+threads = 512
+blocks = cld(N, threads)
 
-@cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) SpinGlassExhaustive.kernel(cu_graph, energies);
+@cuda blocks=blocks threads=threads SpinGlassExhaustive.kernel(cu_graph, energies);
 
 states = sortperm(energies);
 energies[states]
@@ -70,10 +70,10 @@ energies = CUDA.zeros(2^N);
 part_st = CUDA.zeros(2^(N-k));
 part_lst = CUDA.zeros(2^(N-k));
 
-threadsPerBlock = 2^k
-blocksPerGrid = 2^(N-k)
+threads = 512
+blocks = cld(N, threads)
 
-@cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) SpinGlassExhaustive.kernel_part(cu_graph, energies, part_lst, part_st);
+@cuda blocks=blocks threads=threads SpinGlassExhaustive.kernel_part(cu_graph, energies, part_lst, part_st);
 
 idx = sortperm(part_lst);
 states = part_st[idx];
@@ -109,8 +109,8 @@ lowest_d = CUDA.zeros(Float64, how_many*2);
 lowest_states_d = CUDA.zeros(Int64, how_many*2);
 
 k = 2
-threadsPerBlock = 2^k
-blocksPerGrid = 2^(chunk_size-k)
+threads = 512
+blocks = cld(chunk_size, threads)
 
 
 
@@ -118,7 +118,7 @@ for i in 1:2^(N-chunk_size)
 
     idx = (i-1)*(2^chunk_size) + 1 
     
-    @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) SpinGlassExhaustive.kernel_bucket(J_dev, energies_d, idx)
+    @cuda blocks=blocks threads=threads SpinGlassExhaustive.kernel_bucket(J_dev, energies_d, idx)
 
     states_d = sortperm(energies_d)[1:how_many]
 

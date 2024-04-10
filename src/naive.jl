@@ -34,7 +34,7 @@ function SpinGlassNetworks.brute_force(
     ::Val{:GPU};
     num_states::Int=1
 )
-    L = nv(ig)
+    L = SpinGlassNetworks.nv(ig)
     N = 2^L
     σ = CUDA.fill(Int32(-1), L, N)
     JJ = couplings(ig)

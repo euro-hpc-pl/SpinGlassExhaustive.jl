@@ -1,12 +1,11 @@
-using Distributions
-export generate_random_graph
+export generate_random_graph, graph_to_dict, graph_to_qubo
 """
 $(SIGNATURES)
 - `d::Int`: size of random graph.
 Returns random array of size d.
 """
 function generate_random_graph(d::Int)
-    graph = rand(Uniform(-5,5),d, d)
+    graph = 10*(rand(d, d) .- 0.5)
     graph = graph * graph'
 
     graph
@@ -40,17 +39,18 @@ $(SIGNATURES)
 - `graph`: graph of the ising model.
 Converts Ising model graph to Dict.
 """
-function graph_to_dict(graph)
+function graph_to_dict(graph::Array)
     N = size(graph,1)
     graph_dict = Dict()
     for i in 1:N
-        graph_dict[(i, i)] = graph[i,i] #rand(Uniform(-5,5))
+        graph_dict[(i, i)] = graph[i, i]
         for j in i:N
-            graph_dict[(i, j)] = graph[i,j] #rand(Uniform(-5,5))
+            graph_dict[(i, j)] = graph[i,j]
         end
     end
     graph_dict
 end
+graph_to_dict(graph::CuArray) = graph_to_dict(Array(graph))
 
 """
 $(SIGNATURES)

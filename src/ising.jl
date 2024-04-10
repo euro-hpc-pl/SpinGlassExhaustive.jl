@@ -1,14 +1,7 @@
-using LabelledGraphs
-using SpinGlassNetworks
-using Bits
-using DocStringExtensions
-
 export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search, partial_exhaustive_search
 
-const IsingGraph = LabelledGraph{MetaGraph{Int64, Float64}, Int64}
-
 struct Spectrum
-    energies::Vector{Float64}
+    energies::AbstractVector
     states::Vector{Int}
 end
 
@@ -75,7 +68,9 @@ function kernel(graph, energies)
 
     F = energy(state_code, graph) |> Float32
     
-    @inbounds energies[state_code] = F
+    if state_code <= length(energies)
+        @inbounds energies[state_code] = F
+    end
           
     return
 end
@@ -148,22 +143,19 @@ Returns energies and states for provided graph by brute-forece alorithm based on
 function exhaustive_search(ig::IsingGraph)
     L = SpinGlassNetworks.nv(ig)
 
-    σ = CUDA.fill(Int32(-1), L, 2^L)
-    J = couplings(ig) + SpinGlassNetworks.Diagonal(biases(ig))
+    J = couplings(ig) + Diagonal(biases(ig))
     J_dev = CUDA.CuArray(J)
     
     energies = CUDA.zeros(L)
     
     N = size(J_dev,1)
-    k = 2
     
     energies = CUDA.zeros(2^N)
     
-    threadsPerBlock::Int64 = 2^k
-    blocksPerGrid::Int64 = 2^(N-k)
+    threads = 512
+    blocks = cld(N, threads)
     
-    @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel(J_dev, energies)
-   
+    @cuda blocks=blocks threads=threads kernel(J_dev, energies)
     
     states = sortperm(energies)
        
@@ -181,7 +173,7 @@ function partial_exhaustive_search(ig::IsingGraph)
     
    
     σ = CUDA.fill(Int32(-1), L, N)
-    J = couplings(ig) + SpinGlassNetworks.Diagonal(biases(ig))
+    J = couplings(ig) + Diagonal(biases(ig))
     J_dev = CUDA.CuArray(J)
   
     k = 2
@@ -190,10 +182,10 @@ function partial_exhaustive_search(ig::IsingGraph)
     part_st = CUDA.zeros(2^(L-k))
     part_lst = CUDA.zeros(2^(L-k))
     
-    threadsPerBlock::Int64 = 2^k
-    blocksPerGrid::Int64 = 2^(L-k)
+    threads = 512
+    blocks = cld(L, threads)
     
-    @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_part(J_dev, energies, part_lst, part_st)
+    @cuda blocks=blocks threads=threads kernel_part(J_dev, energies, part_lst, part_st)
    
     
     idx = sortperm(part_lst)
@@ -255,7 +247,7 @@ function exhaustive_search_bucket(ig::IsingGraph, how_many::Int = 8)
     L = SpinGlassNetworks.nv(ig)
 
     σ = CUDA.fill(Int32(-1), L, 2^L)
-    J = couplings(ig) + SpinGlassNetworks.Diagonal(biases(ig))
+    J = couplings(ig) + Diagonal(biases(ig))
     J_dev = CUDA.CuArray(J)
     
     N = size(J_dev,1)
@@ -271,9 +263,8 @@ function exhaustive_search_bucket(ig::IsingGraph, how_many::Int = 8)
     lowest_d = CUDA.zeros(Float64, how_many*2)
     lowest_states_d = CUDA.zeros(Int64, how_many*2)
     
-    k = 2
-    threadsPerBlock = 2^k
-    blocksPerGrid = 2^(chunk_size-k)
+    threads = 512
+    blocks = cld(N, threads)
 
 
 
@@ -281,7 +272,7 @@ function exhaustive_search_bucket(ig::IsingGraph, how_many::Int = 8)
 
         idx = (i-1)*(2^chunk_size) + 1 
         
-        @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_bucket(J_dev, energies_d, idx)
+        @cuda blocks=blocks threads=threads kernel_bucket(J_dev, energies_d, idx)
 
         states_d = sortperm(energies_d)[1:how_many]
 

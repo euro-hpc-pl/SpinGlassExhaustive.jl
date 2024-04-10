@@ -8,6 +8,10 @@ module SpinGlassExhaustive
     using LabelledGraphs
     using Bits
     using LinearAlgebra
+    using DocStringExtensions
+    using CUDA
 
     include("naive.jl")
+    include("utils.jl")
+    include("ising.jl")
 end
