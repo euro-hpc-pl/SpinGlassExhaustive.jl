@@ -1,5 +1,12 @@
 export brute_force
 
+"""
+$(SIGNATURES)
+- `J`: diagonal elements of graph of the ising model..
+- `energies`: array filled with zeros. Each array index represents the state of the system.
+- `σ`: non-diagonal elements of of graph of the ising model.
+Returns the state energy.
+"""
 function naive_energy_kernel(J, energies, σ)
     idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
@@ -17,6 +24,11 @@ function naive_energy_kernel(J, energies, σ)
     return
 end
 
+"""
+$(SIGNATURES)
+- `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
+Returns energies and states for provided model by naive brute-forece alorithm based on GPU.
+"""
 function SpinGlassNetworks.brute_force(
     ig::IsingGraph,
     ::Val{:GPU};

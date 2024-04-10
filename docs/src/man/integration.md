@@ -1,48 +1,26 @@
-using SpinGlassNetworks
-using LightGraphs
+```@setup SpinGlassExhaustive
 using SpinGlassExhaustive
-using LinearAlgebra
+
+import Pkg;
+Pkg.add("CUDA")
 using CUDA
-using Bits
 
-function bench_cpu(instance::String, max_states::Int=100)
-    m = 2
-    n = 2
-    t = 24
+Pkg.add("SpinGlassEngine")
+using SpinGlassEngine
 
-    ig = ising_graph(instance)
-    cl = split_into_clusters(ig, super_square_lattice((m, n, t)))
-    @time sp = brute_force(cl[1, 1], num_states=max_states)
-    sp
-end
+Pkg.add("SpinGlassNetworks")
+using SpinGlassNetworks
 
-function bench_gpu(instance::String, max_states::Int=100)
-    m = 2
-    n = 2
-    t = 24
+Pkg.add("BenchmarkTools")
+using BenchmarkTools
+```
+# Integration SpinGlassExhaustive with other EuroHPC packages 
+As part of the Euro-HPC project, a number of tools were developed to solve the Ising problem. In this section, we will present how to benchmark algorithms from SpinGlassExhaustive, SpinGlassEngine.jl and SpinGlassNetworks.jl.
 
-    ig = ising_graph(instance)
-    cl = split_into_clusters(ig, super_square_lattice((m, n, t)))
-    @time sp = brute_force(cl[1, 1], :GPU; num_states=max_states)
-    sp
-end
 
-println("*** CPU ***")
-sp_cpu = bench_cpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
-sp_cpu = bench_cpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
+```@repl SpinGlassExhaustive
+instance = "../benchmarks/pathological/test_3_4_3.txt";
 
-println("*** GPU ***")
-sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
-sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
-
-@assert sp_gpu.energies ≈ sp_cpu.energies
-@assert sp_gpu.states == sp_cpu.states
-
-"""
-$(SIGNATURES)
-- `instance::String`: path to instance of Ising model.
-It generates the running time of algorithms that search the solution space of the Ising model.
-"""
 function bench(instance::String)
     ig = SpinGlassEngine.ising_graph(instance)
     graph = couplings(ig) + SpinGlassEngine.Diagonal(biases(ig))
@@ -149,3 +127,5 @@ function bench(instance::String)
         res_sge = SpinGlassExhaustive.exhaustive_search_bucket(ig)
     end
 end
+
+```

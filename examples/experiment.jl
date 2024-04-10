@@ -1,24 +1,103 @@
 using SpinGlassExhaustive
 
+function exp_exhaustive_search()
+  N = 8
+  graph = generate_random_graph(N)
+  cu_graph = graph |> cu 
 
-function main(args)
-    s = ArgParseSettings("description")
-    @add_arg_table s begin
-        "--steps", "-s"
-          help = "number of samples per dimension"
-          default = 10
-          arg_type = Int
-        "--dims", "-d"
-          help = "dimensions"
-          nargs = '*'
-          default = [4, 16, 64]
-          arg_type = Int
-      end
-    parsed_args = parse_args(s)
-    steps = parsed_args["steps"]
-    dims = parsed_args["dims"]
-    savect(steps, dims)
-  end
+  ig = SpinGlassEngine.ising_graph(graph_to_dict(cu_graph))    
+    
+  exhaustive_search(ig)
+end
+
+function exp_bucket_exhaustive_search()
+  N = 8
+  graph = generate_random_graph(N)
+  cu_graph = graph |> cu 
+
+  ig = SpinGlassEngine.ising_graph(graph_to_dict(cu_graph))    
+    
+  exhaustive_search_bucket(ig)
+end
+
+function exp_partial_exhaustive_search()
+  N = 8
+  graph = generate_random_graph(N)
+  cu_graph = graph |> cu 
+
+  ig = SpinGlassEngine.ising_graph(graph_to_dict(cu_graph))    
+    
+  partial_exhaustive_search(ig)
+end
+
+function exp_qubo()
+  N = 8
+  graph = generate_random_graph(N)
+  qubo = graph_to_qubo(graph)
+
+  cu_qubo = qubo |> cu 
+
+  k = 2
+
+  energies = CUDA.zeros(2^N)
+
+  threadsPerBlock::Int64 = 2^k
+  blocksPerGrid::Int64 = 2^(N-k)
+
+  @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_qubo(cu_qubo, energies)
+
+  # sort!(energies)
+  # or
+  states = sortperm(energies)
+  energies[states]
+
+  offset = get_energy_offset(Array(cu_graph))
+  Array(sort!(energies)).-offset
+end
+
+function exp_ising()
+  N = 8
+  graph = generate_random_graph(N)
+  cu_graph = graph |> cu 
   
-  main(ARGS)
+  k = 2
+
+  energies = CUDA.zeros(2^N)
+
+  threadsPerBlock::Int64 = 2^k
+  blocksPerGrid::Int64 = 2^(N-k)
+
+  @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel(cu_graph, energies)
+
+  sort!(energies)
+ 
+  # or
+  # states = sortperm(energies)
+  # energies[states]
+
+end
+
+function exp_ising_part()
+  N = 8
+  graph = generate_random_graph(N)
+  cu_graph = graph |> cu 
   
+  k = 2
+
+  energies = CUDA.zeros(2^N)
+  part_st = CUDA.zeros(2^(N-k))
+  part_lst = CUDA.zeros(2^(N-k))
+
+  threadsPerBlock::Int64 = 2^k
+  blocksPerGrid::Int64 = 2^(N-k)
+
+  @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_part(cu_graph, energies, part_lst, part_st)
+
+  sort!(part_lst)
+ 
+  # or
+  # idx = sortperm(part_lst)
+  # states = part_st[idx]
+  # part_lst[idx]
+
+end
