@@ -1,4 +1,4 @@
-export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search, partial_exhaustive_search
+export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search, partial_exhaustive_search, exhaustive_search_bucket
 
 struct Spectrum
     energies::AbstractVector
@@ -83,8 +83,8 @@ Returns energies energy expressed as QUBO for every state.
 """
 function kernel_qubo(graph, energies)
     N = size(graph,1)
-
     state_code = (blockIdx().x - 1) * blockDim().x + threadIdx().x 
+    state_code > length(energies) && return nothing
 
     F = energy_qubo(state_code, graph) |> Float32
     
@@ -101,39 +101,39 @@ $(SIGNATURES)
 - `part_st`: list for collecting partial state results.
 Returns energies for every state.
 """
-function kernel_part(graph, energies, part_lst, part_st)
-    i = blockIdx().x
-    j = threadIdx().x
+# function kernel_part(graph, energies, part_lst, part_st)
+#     i = blockIdx().x
+#     j = threadIdx().x
 
-    state_code = (i - 1) * blockDim().x + j 
+#     state_code = (i - 1) * blockDim().x + j 
 
-    F = energy(state_code, graph) |> Float32
+#     F = energy(state_code, graph) |> Float32
     
-    @inbounds energies[state_code] = F
+#     @inbounds energies[state_code] = F
 
-    sync_threads()
+#     sync_threads()
     
-    if j == 1
-        k = (i - 1) * blockDim().x + 1
-        n = blockDim().x
+#     if j == 1
+#         k = (i - 1) * blockDim().x + 1
+#         n = blockDim().x
         
-        value=energies[k]
-        st=k
-        for ii in k:k+n-1
-            if value > energies[ii]
-                value = energies[ii]
-                st=k
-            end
-        end 
+#         value=energies[k]
+#         st=k
+#         for ii in k:k+n-1
+#             if value > energies[ii]
+#                 value = energies[ii]
+#                 st=k
+#             end
+#         end 
                
-        sync_threads()
+#         sync_threads()
         
-        part_lst[i] = value # low_en[k]
-        part_st[i] = st
-    end
+#         part_lst[i] = value # low_en[k]
+#         part_st[i] = st
+#     end
     
-    return
-end
+#     return
+# end
 
 """
 $(SIGNATURES)
@@ -167,33 +167,32 @@ $(SIGNATURES)
 - `ig::IsingGraph`: graph of ising model represented by IsingGraph structure.
 Returns energies and states for provided graph by brute-forece alorithm supported by partial selection based on GPU.
 """
-function partial_exhaustive_search(ig::IsingGraph)
-    L = SpinGlassNetworks.nv(ig)
-    N = 2^L
+# function partial_exhaustive_search(ig::IsingGraph)
+#     L = SpinGlassNetworks.nv(ig)
+#     N = 2^L
     
    
-    σ = CUDA.fill(Int32(-1), L, N)
-    J = couplings(ig) + Diagonal(biases(ig))
-    J_dev = CUDA.CuArray(J)
+#     σ = CUDA.fill(Int32(-1), L, N)
+#     J = couplings(ig) + Diagonal(biases(ig))
+#     J_dev = CUDA.CuArray(J)
   
-    k = 2
+#     k = 2
 
-    energies = CUDA.zeros(N)
-    part_st = CUDA.zeros(2^(L-k))
-    part_lst = CUDA.zeros(2^(L-k))
+#     energies = CUDA.zeros(N)
+#     part_st = CUDA.zeros(2^(L-k))
+#     part_lst = CUDA.zeros(2^(L-k))
     
-    threads = 512
-    blocks = cld(L, threads)
+#     threads = 512
+#     blocks = cld(L, threads)
     
-    @cuda blocks=blocks threads=threads kernel_part(J_dev, energies, part_lst, part_st)
+#     @cuda blocks=blocks threads=threads kernel_part(J_dev, energies, part_lst, part_st)
    
-    
-    idx = sortperm(part_lst)
-    part_st[idx]
-    part_lst[idx]
+#     idx = sortperm(part_lst)
+#     part_st[idx]
+#     part_lst[idx]
        
-    Spectrum(part_lst[idx], part_st[idx])
-end
+#     Spectrum(part_lst[idx], part_st[idx])
+# end
 
 """
 $(SIGNATURES)
@@ -227,7 +226,7 @@ Returns energies for given indexes.
 function kernel_bucket(graph, energies, idx)
 
     i = (blockIdx().x - 1) * blockDim().x + threadIdx().x 
-    
+    i > length(energies) && return nothing
     state_code = idx + i
 
     
