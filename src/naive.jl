@@ -49,5 +49,5 @@ function SpinGlassNetworks.brute_force(
     perm = sortperm(energies)[1:num_states]
     energies_cpu = Array(view(energies, perm))
     σ_cpu = Array(view(σ, :, perm))
-    Spectrum(energies_cpu, [σ_cpu[:, i] for i ∈ 1:size(σ_cpu, 2)])
+    Spectrum(energies_cpu, σ_cpu)
 end
