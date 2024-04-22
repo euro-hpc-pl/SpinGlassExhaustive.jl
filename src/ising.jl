@@ -2,7 +2,7 @@ export energy_qubo, energy, kernel, kernel_qubo, kernel_part, exhaustive_search,
 
 struct Spectrum
     energies::AbstractVector
-    states::Union{VecOrMat{Int}, VecOrMat{Int32}}
+    states::Union{AbstractVecOrMat{Int}, AbstractVecOrMat{Int32}}
 end
 
 """
