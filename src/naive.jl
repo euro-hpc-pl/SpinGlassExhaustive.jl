@@ -43,11 +43,10 @@ function SpinGlassNetworks.brute_force(
 
     th = 2 ^ 9 # this should eventually vary
     bl = cld(N, th)
-
     @cuda threads=th blocks=bl naive_energy_kernel(J, energies, σ)
 
     perm = sortperm(energies)[1:num_states]
     energies_cpu = Array(view(energies, perm))
     σ_cpu = Array(view(σ, :, perm))
-    Spectrum(energies_cpu, σ_cpu)
+    SpinGlassNetworks.Spectrum(energies_cpu, σ_cpu)
 end
