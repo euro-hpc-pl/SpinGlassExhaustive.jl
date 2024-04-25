@@ -5,7 +5,7 @@ function exp_exhaustive_search()
   graph = generate_random_graph(N)
   cu_graph = graph |> cu 
 
-  ig = SpinGlassEngine.ising_graph(graph_to_dict(cu_graph))    
+  ig = ising_graph(graph_to_dict(cu_graph))    
     
   exhaustive_search(ig)
 end
@@ -15,7 +15,7 @@ function exp_bucket_exhaustive_search()
   graph = generate_random_graph(N)
   cu_graph = graph |> cu 
 
-  ig = SpinGlassEngine.ising_graph(graph_to_dict(cu_graph))    
+  ig = ising_graph(graph_to_dict(cu_graph))    
     
   exhaustive_search_bucket(ig)
 end
@@ -25,7 +25,7 @@ function exp_partial_exhaustive_search()
   graph = generate_random_graph(N)
   cu_graph = graph |> cu 
 
-  ig = SpinGlassEngine.ising_graph(graph_to_dict(cu_graph))    
+  ig = ising_graph(graph_to_dict(cu_graph))    
     
   partial_exhaustive_search(ig)
 end
@@ -44,7 +44,7 @@ function exp_qubo()
   threadsPerBlock::Int64 = 2^k
   blocksPerGrid::Int64 = 2^(N-k)
 
-  @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_qubo(cu_qubo, energies)
+  @cuda blocks=blocks threads=threads kernel_qubo(cu_qubo, energies)
 
   # sort!(energies)
   # or
@@ -67,7 +67,7 @@ function exp_ising()
   threadsPerBlock::Int64 = 2^k
   blocksPerGrid::Int64 = 2^(N-k)
 
-  @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel(cu_graph, energies)
+  @cuda blocks=blocks threads=threads kernel(cu_graph, energies)
 
   sort!(energies)
  
@@ -91,7 +91,7 @@ function exp_ising_part()
   threadsPerBlock::Int64 = 2^k
   blocksPerGrid::Int64 = 2^(N-k)
 
-  @cuda blocks=(blocksPerGrid) threads=(threadsPerBlock) kernel_part(cu_graph, energies, part_lst, part_st)
+  @cuda blocks=blocks threads=threads kernel_part(cu_graph, energies, part_lst, part_st)
 
   sort!(part_lst)
  

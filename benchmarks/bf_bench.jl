@@ -1,5 +1,5 @@
 using SpinGlassNetworks
-using LightGraphs
+using Graphs
 using SpinGlassExhaustive
 using LinearAlgebra
 using CUDA
@@ -13,6 +13,7 @@ function bench_cpu(instance::String, max_states::Int=100)
     ig = ising_graph(instance)
     cl = split_into_clusters(ig, super_square_lattice((m, n, t)))
     @time sp = brute_force(cl[1, 1], num_states=max_states)
+    Spectrum
     sp
 end
 
@@ -36,7 +37,9 @@ sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
 sp_gpu = bench_gpu("$(@__DIR__)/pegasus_droplets/2_2_3_00.txt")
 
 @assert sp_gpu.energies ≈ sp_cpu.energies
-@assert sp_gpu.states == sp_cpu.states
+@show sp_gpu.states
+@show sp_cpu.states[1]
+@assert sp_gpu.states == sp_cpu.states[1]
 
 """
 $(SIGNATURES)

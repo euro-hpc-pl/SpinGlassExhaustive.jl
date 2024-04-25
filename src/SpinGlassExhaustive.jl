@@ -4,15 +4,14 @@ Main module for `SpinGlassExhaustive.jl` -- a Julia package for brute-force spin
 
 module SpinGlassExhaustive
     using SpinGlassNetworks
+    using Graphs
     using LabelledGraphs
-    using MetaGraphs
-    using CUDA
-    using BenchmarkTools
+    using Bits
+    using LinearAlgebra
     using DocStringExtensions
+    using CUDA
 
-
-    include("bitonicsort.jl")
-    include("ising.jl")
+    include("naive.jl")
     include("utils.jl")
-
+    include("ising.jl")
 end

@@ -34,20 +34,19 @@ function SpinGlassNetworks.brute_force(
     ::Val{:GPU};
     num_states::Int=1
 )
-    L = nv(ig)
+    L = SpinGlassNetworks.nv(ig)
     N = 2^L
     σ = CUDA.fill(Int32(-1), L, N)
     JJ = couplings(ig)
     J = CUDA.CuArray(JJ + Diagonal(biases(ig)))
     energies = CUDA.zeros(eltype(JJ), N)
 
-    th = 2 ^ 10 # this should eventually vary
+    th = 2 ^ 9 # this should eventually vary
     bl = cld(N, th)
-
     @cuda threads=th blocks=bl naive_energy_kernel(J, energies, σ)
 
     perm = sortperm(energies)[1:num_states]
     energies_cpu = Array(view(energies, perm))
     σ_cpu = Array(view(σ, :, perm))
-    Spectrum(energies_cpu, [σ_cpu[:, i] for i ∈ 1:size(σ_cpu, 2)])
+    SpinGlassNetworks.Spectrum(energies_cpu, σ_cpu)
 end
