@@ -199,7 +199,7 @@ $(SIGNATURES)
 Returns the maximum chunk size for the algorithm supported by bucket selection.
 """
 function max_chunk_size()
-    mem_bytes = CUDA.available_memory()
+    mem_bytes = CUDA.free_memory()
     elements_max = mem_bytes ÷ 16 ÷ 2
 
     chunk_size = 0
